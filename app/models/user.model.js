@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {UserLocationSchema} = require('../models/location.model')
 
 const UserSchema = mongoose.Schema({
     username: {
@@ -21,6 +22,30 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    role: {
+        type: String,
+        enum: ['admin', 'user'],
+        default: 'user'
+    },
+    phonenumber: {
+        type: Number,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true
+    },
+    location: {
+        type: Object,
+    },
+    feedbacks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Feedback'
+    }],
+    referrals: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'recruitmentdata'
+    }]
     // role: {
     //     type: String,
     //     required: true,
@@ -29,11 +54,6 @@ const UserSchema = mongoose.Schema({
     // group: {
     //     type: String,
     //     required: true,
-    // },
-    // DOB: {
-    //     type: Date,
-    //     required: true,
-    //     default: new Date()
     // },
 }, {
     timestamps: true

@@ -12,11 +12,17 @@ exports.create = (req, res) => {
         firstname: req.body.firstname,
         middlename: req.body.middlename,
         lastname: req.body.lastname,
+        role: req.body.usercode == "ADMIN420"?'admin':'user',
+        phonenumber: req.body.phonenumber,
+        email: req.body.email,
     })
 
     user.save()
     .then(data => {
-        res.send(data);
+        res.send({
+            data,
+            success: true
+        });
     }).catch(err => {
         res.status(500).send({
             message: err.message || "some error occurred while creating"
@@ -157,4 +163,32 @@ exports.authenticate = (req, res) => {
             });
         })
     }
+}
+
+//Updating location data.
+
+exports.updateLocation = (req, res) => {
+    var id = req.body.id
+    var locationObj = req.body.locationObject
+    User.findOneAndUpdate({_id : id }, {location: locationObj}, {new: true})
+    .then(user => {
+        res.send(user)
+    })
+    .catch(err => console.log(err))
+}
+
+//gathering location data
+exports.gatherlocations = (req, res) => {
+    User.find({role: {$ne: 'admin'}}, {firstname: 1, lastname: 1, email: 1, location: 1, _id: 1})
+    .then(data => {
+        res.send({
+            data,
+            success: true,
+        })
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "Some error occurred while retrieving users."
+        });
+    })
 }
